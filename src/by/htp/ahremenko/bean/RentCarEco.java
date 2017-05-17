@@ -30,6 +30,54 @@ public class RentCarEco extends Car {
 	public String toString() {
 		return super.toString() + maxDistance + FileRW.csvDelimiter ;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Car other = (Car) obj;
+		if (carCase != other.carCase)
+			return false;
+		// ignore ID ! 
+		/*if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;*/
+		if (model == null) {
+			if (other.model != null)
+				return false;
+		} else if (!model.equals(other.model))
+			return false;
+		if (modelType == null) {
+			if (other.modelType != null)
+				return false;
+		} else if (!modelType.equals(other.modelType))
+			return false;
+		if (rentPricePerDay == null) {
+			if (other.rentPricePerDay != null)
+				return false;
+		} else if (!rentPricePerDay.equals(other.rentPricePerDay))
+			return false;
+		if (yearManufactured == null) {
+			if (other.yearManufactured != null)
+				return false;
+		} else if (!yearManufactured.equals(other.yearManufactured))
+			return false;
+		RentCarEco other1 = (RentCarEco) obj;
+		if (maxDistance == null) {
+			if ( other1.maxDistance!= null)
+				return false;
+		} else if (!maxDistance.equals(other1.maxDistance))
+			return false;
+		return true;
+
+	}
 	
 	
 }

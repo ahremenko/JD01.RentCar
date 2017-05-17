@@ -10,5 +10,6 @@ public interface RentService {
 	void deleteCar(Integer id) throws ServiceException;
 	void bookCar(Integer id) throws ServiceException;
 	void unbookCar(Integer id) throws ServiceException;
-
+	String listCar() throws ServiceException;
+	String findCar( String searchingFields, String searchingValues ) throws ServiceException;
 }

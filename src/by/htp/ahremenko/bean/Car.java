@@ -2,13 +2,13 @@ package by.htp.ahremenko.bean;
 
 import by.htp.ahremenko.dao.impl.FileRW;
 
-public abstract class Car {
-	private Integer yearManufactured;
-	private String model;
-	private String modelType;
-	private Integer id;
-	private CarCase carCase;
-	private Float rentPricePerDay;
+public class Car {
+	protected Integer yearManufactured;
+	protected String model;
+	protected String modelType;
+	protected Integer id;
+	protected CarCase carCase;
+	protected Float rentPricePerDay;
 
 	public enum CarCase { SEDAN, HATCHBACK, BUS, JEEP, ND}
 	
@@ -167,7 +167,8 @@ public abstract class Car {
 		case RENTPRICEPERDAY: return ( this.rentPricePerDay == Float.parseFloat(searchingString) );
 		}
 		return false;
-	}	
+	}
+	
 }
 
 

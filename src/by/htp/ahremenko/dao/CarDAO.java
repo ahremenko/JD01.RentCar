@@ -10,4 +10,6 @@ public interface CarDAO {
 	void deleteCar (Integer id) throws DAOException;
 	void bookCar (Integer id) throws DAOException;
 	void unbookCar (Integer id) throws DAOException;
+	String listCar () throws DAOException;
+	String findCar (String searchingFields, String searchingValues) throws DAOException;
 }

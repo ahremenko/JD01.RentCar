@@ -1,13 +1,7 @@
 package by.htp.ahremenko.controller.command.impl;
 
-import java.io.IOException;
 import java.util.Scanner;
 
-import by.htp.ahremenko.bean.RentCar;
-import by.htp.ahremenko.bean.RentCarEco;
-import by.htp.ahremenko.bean.Car.CarCase;
-import by.htp.ahremenko.bean.RentCar.FuelType;
-import by.htp.ahremenko.bean.RentCar.TransmissionType;
 import by.htp.ahremenko.controller.command.Command;
 import by.htp.ahremenko.dao.impl.FileRW;
 import by.htp.ahremenko.service.RentService;
@@ -39,9 +33,11 @@ public class DeleteCar implements Command {
         RentService rentService = serviceFactory.getRentService();
         
   		try {
-    			rentService.deleteCar( id );
+    		rentService.deleteCar( id );
    		} catch (ServiceException e) {
-    			FileRW.writeLog(e.getMessage());
+    		FileRW.writeLog(e.getMessage());
+   		} finally {
+   			scanner.close();
    		}
         
         return "Car # " + id + " was deleted succesfull.";    

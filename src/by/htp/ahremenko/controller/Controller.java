@@ -13,10 +13,17 @@ public final class Controller {
 		Command executingCommand;
 		String commandArgs;
 		String response;
-		
-		commandName = request.substring(0, request.indexOf(commandDelimiter));
+		if ( request.indexOf(commandDelimiter) > 0 ) {
+		    commandName = request.substring(0, request.indexOf(commandDelimiter));
+		} else {
+			commandName = request;	
+		}
 		executingCommand = provider.getCommand(commandName);
-		commandArgs = request.substring(request.indexOf(commandDelimiter) + 1 );
+		if ( request.indexOf(commandDelimiter) > 0 ) {
+		   commandArgs = request.substring(request.indexOf(commandDelimiter) + 1 );
+		} else {
+			commandArgs = "";
+		}
 		response = executingCommand.execute(commandArgs);
 		return response;
 		

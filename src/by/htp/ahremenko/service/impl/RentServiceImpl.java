@@ -43,8 +43,36 @@ public class RentServiceImpl implements RentService{
 		} catch ( DAOException e) {
 			throw new ServiceException(e);
 		}
-		
 	}
+	
+	@Override
+	public String listCar() throws ServiceException {
+		String carList = "";
+		try {
+			DAOFactory daoObjectFactory = DAOFactory.getInstance();
+			CarDAO carDAO = daoObjectFactory.getCarDAO();
+			carList = carDAO.listCar();
+		} catch ( DAOException e) {
+			throw new ServiceException(e);
+		}
+		return carList;
+	}
+	
+	
+	
+	@Override
+	public String findCar(String searchingFields, String searchingValues) throws ServiceException {
+		String carList = "";
+		try {
+			DAOFactory daoObjectFactory = DAOFactory.getInstance();
+			CarDAO carDAO = daoObjectFactory.getCarDAO();
+			carList = carDAO.findCar(searchingFields, searchingValues);
+		} catch ( DAOException e) {
+			throw new ServiceException(e);
+		}
+		return carList;
+	}
+
 	@Override
 	public void bookCar(Integer id) throws ServiceException {
 		// TODO Auto-generated method stub

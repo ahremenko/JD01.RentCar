@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Scanner;
 
 import by.htp.ahremenko.bean.RentCar;
+import by.htp.ahremenko.bean.RentCar.FuelType;
+import by.htp.ahremenko.bean.RentCar.TransmissionType;
 import by.htp.ahremenko.bean.RentCarEco;
 import by.htp.ahremenko.bean.Car;
 import by.htp.ahremenko.bean.Car.CarCase;
@@ -13,47 +15,72 @@ import by.htp.ahremenko.bean.Car.CarFields;
 
 public class ListCarLogic {
 
-	public static List<RentCarEco> getListCar() throws IOException {
-		// get ArrayList of RentCarEco
+	public static List<Car> getListCar() throws IOException {
 		
-		List<RentCarEco> carList = new ArrayList<>();
+		List<Car> carList = new ArrayList<>();
 		String fileContent = FileRW.readFile(FileRW.getCarFilePath());
-        String readedLine = fileContent.substring(0, fileContent.indexOf('\n'));
+        String readedLine = "";
+        
+        if (fileContent.indexOf('\n')>0) {
+        	readedLine =  fileContent.substring(0, fileContent.indexOf('\n'));
+        }	
+        
         Scanner scanner = null;
+        
         int fieldCounter = 0;		
 
         while ( !readedLine.equals("") ) {
-        	RentCarEco carFromFile = new RentCarEco();
+            Integer i = -1;
+            String m = "";
+            String mt = "";
+            Integer y = 1900;
+            CarCase c = CarCase.ND;
+            Float p = 0f;
+            Integer md = 0;
+            RentCar.TransmissionType t = null;
+            RentCar.FuelType f = null;
             scanner = new Scanner(readedLine);
             scanner.useDelimiter(";");
             while (scanner.hasNext()) {
                 String data = scanner.next();
                 try {
                 if ( (fieldCounter == 0) && (!data.equals("")))
-                	carFromFile.setId(Integer.parseInt(data));
+                	i = Integer.parseInt(data);
                 else if ( (fieldCounter == 1) && (!data.equals("")))
-                	carFromFile.setModel(data);
+                	m = data;
                 else if ( (fieldCounter == 2) && (!data.equals("")))
-                	carFromFile.setModelType(data);
+                	mt = data;
                 else if ( (fieldCounter == 3) && (!data.equals("")))
-                	carFromFile.setCarCase( CarCase.valueOf(data.toUpperCase()));
+                	c = CarCase.valueOf(data.toUpperCase());
                 else if ( (fieldCounter == 4) && (!data.equals("")))
-                	carFromFile.setYearManufactured(Integer.parseInt(data));
+                	y = Integer.parseInt(data);
                 else if ( (fieldCounter == 5) && (!data.equals("")))
-                	carFromFile.setRentPricePerDay(Float.parseFloat(data));
-                else if ( (fieldCounter == 6) && (!data.equals("")))
-              		carFromFile.setMaxDistance(Integer.parseInt(data));
-                else
-                	FileRW.writeLog("Extra data: " + data);
-                    //System.out.println("Extra data: " + data);
+                	p = Float.parseFloat(data);
+                
+                else if ( (fieldCounter == 6) && (!data.equals(""))) {
+                		try {
+                			md = Integer.parseInt(data);
+                		} catch (NumberFormatException e) {
+                			t = TransmissionType.valueOf(data);	
+                		}
+                }	 
+                else if ( (fieldCounter == 7) && (!data.equals("")))
+                	f = FuelType.valueOf(data); 
                 } catch (NumberFormatException e) {
                 }
                 fieldCounter++;
             }
-            if ( carFromFile.getId() > -1 && carFromFile.getMaxDistance() > -1) {
-            	carList.add(carFromFile);
+            if ( i > -1) {
+            	if ( md > 0) {
+            		RentCarEco rentCarEcoFromFile = new RentCarEco(i, m, mt, c, y, p, md);  
+            		carList.add(rentCarEcoFromFile);
+            	} 
+            	if ( t != null || f != null ) {
+            		RentCar rentCarFromFile = new RentCar(i, m, mt, c, y, p, t, f); 
+            		carList.add(rentCarFromFile);
+            	}
             }	
-            fieldCounter = 0;   
+            fieldCounter = 0;
             if (fileContent.contains("\n")) {
             	fileContent = fileContent.substring(fileContent.indexOf('\n')+1);
             	if (fileContent.contains("\n")) {
@@ -68,8 +95,8 @@ public class ListCarLogic {
 		return carList;
 	}
 	
-	public static List<RentCarEco> getCarListByOneField (List<RentCarEco> carList, String searchingString, CarFields searchingField) {
-		List<RentCarEco> carListFound = new ArrayList<>();
+	public static List<Car> getCarListByOneField (List<Car> carList, String searchingString, CarFields searchingField) {
+		List<Car> carListFound = new ArrayList<>();
 		
 		for(int i=0;i<carList.size();i++) {
 			if (carList.get(i).searchByField(searchingString, searchingField)  ) {

@@ -39,5 +39,59 @@ public class RentCar extends Car {
 		return super.toString() + transmission + FileRW.csvDelimiter + fuel + FileRW.csvDelimiter;
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Car other = (Car) obj;
+		if (carCase != other.carCase)
+			return false;
+		// ignore ID ! 
+		/*if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;*/
+		if (model == null) {
+			if (other.model != null)
+				return false;
+		} else if (!model.equals(other.model))
+			return false;
+		if (modelType == null) {
+			if (other.modelType != null)
+				return false;
+		} else if (!modelType.equals(other.modelType))
+			return false;
+		if (rentPricePerDay == null) {
+			if (other.rentPricePerDay != null)
+				return false;
+		} else if (!rentPricePerDay.equals(other.rentPricePerDay))
+			return false;
+		if (yearManufactured == null) {
+			if (other.yearManufactured != null)
+				return false;
+		} else if (!yearManufactured.equals(other.yearManufactured))
+			return false;
+		RentCar other1 = (RentCar) obj;
+		if (transmission == null) {
+			if ( other1.transmission!= null)
+				return false;
+		} else if (!transmission.equals(other1.transmission))
+			return false;
+		if (fuel == null) {
+			if ( other1.fuel!= null)
+				return false;
+		} else if (!fuel.equals(other1.fuel))
+			return false;
+		
+		return true;
+
+	}
+	
 
 }

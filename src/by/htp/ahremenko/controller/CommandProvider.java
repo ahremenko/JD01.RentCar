@@ -5,8 +5,11 @@ import java.util.Map;
 
 import by.htp.ahremenko.controller.command.Command;
 import by.htp.ahremenko.controller.command.CommandName;
-import by.htp.ahremenko.controller.command.impl.AddNewCar;
-import by.htp.ahremenko.controller.command.impl.DeleteCar;
+import by.htp.ahremenko.controller.command.impl.*;
+//import by.htp.ahremenko.controller.command.impl.AddNewCar;
+//import by.htp.ahremenko.controller.command.impl.DeleteCar;
+//import by.htp.ahremenko.controller.command.impl.ListCar;
+//import by.htp.ahremenko.controller.command.impl.FindCar;
 import by.htp.ahremenko.dao.impl.FileRW;;
 
 public class CommandProvider {
@@ -15,6 +18,8 @@ public class CommandProvider {
 	CommandProvider() {
 		commandList.put(CommandName.ADDCAR, new AddNewCar());
 		commandList.put(CommandName.DELCAR, new DeleteCar());
+		commandList.put(CommandName.LISTCAR, new ListCar());
+		commandList.put(CommandName.FINDCAR, new FindCar());
 	}
 	
 	Command getCommand (String usersCommand) {
