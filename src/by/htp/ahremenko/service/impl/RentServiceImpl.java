@@ -2,6 +2,7 @@ package by.htp.ahremenko.service.impl;
 
 import by.htp.ahremenko.bean.RentCar;
 import by.htp.ahremenko.bean.RentCarEco;
+import by.htp.ahremenko.bean.exception.FieldNotFoundException;
 import by.htp.ahremenko.dao.CarDAO;
 import by.htp.ahremenko.dao.factory.DAOFactory;
 import by.htp.ahremenko.dao.exception.DAOException;
@@ -17,7 +18,7 @@ public class RentServiceImpl implements RentService{
 			CarDAO carDAO = daoObjectFactory.getCarDAO();
 			carDAO.addNewCar(car);
 		} catch ( DAOException e) {
-			throw new ServiceException(e);
+			throw new ServiceException(e.getMessage());
 		}
 		
 	}
@@ -29,7 +30,7 @@ public class RentServiceImpl implements RentService{
 			CarDAO carDAO = daoObjectFactory.getCarDAO();
 			carDAO.addNewCar(car);
 		} catch ( DAOException e) {
-			throw new ServiceException(e);
+			throw new ServiceException(e.getMessage());
 		}
 		
 	}
@@ -40,25 +41,10 @@ public class RentServiceImpl implements RentService{
 			DAOFactory daoObjectFactory = DAOFactory.getInstance();
 			CarDAO carDAO = daoObjectFactory.getCarDAO();
 			carDAO.deleteCar(id);
-		} catch ( DAOException e) {
-			throw new ServiceException(e);
+		} catch ( DAOException|FieldNotFoundException e) {
+			throw new ServiceException(e.getMessage());
 		}
 	}
-	
-	@Override
-	public String listCar() throws ServiceException {
-		String carList = "";
-		try {
-			DAOFactory daoObjectFactory = DAOFactory.getInstance();
-			CarDAO carDAO = daoObjectFactory.getCarDAO();
-			carList = carDAO.listCar();
-		} catch ( DAOException e) {
-			throw new ServiceException(e);
-		}
-		return carList;
-	}
-	
-	
 	
 	@Override
 	public String findCar(String searchingFields, String searchingValues) throws ServiceException {
@@ -67,24 +53,34 @@ public class RentServiceImpl implements RentService{
 			DAOFactory daoObjectFactory = DAOFactory.getInstance();
 			CarDAO carDAO = daoObjectFactory.getCarDAO();
 			carList = carDAO.findCar(searchingFields, searchingValues);
-		} catch ( DAOException e) {
-			throw new ServiceException(e);
+		} catch ( DAOException|FieldNotFoundException e) {
+			throw new ServiceException(e.getMessage());
 		}
 		return carList;
 	}
 
 	@Override
-	public void bookCar(Integer id) throws ServiceException {
-		// TODO Auto-generated method stub
-		
+	public void updateCar(Integer id, String updatingField, String newValue) throws ServiceException {
+		try {
+			DAOFactory daoObjectFactory = DAOFactory.getInstance();
+			CarDAO carDAO = daoObjectFactory.getCarDAO();
+			carDAO.updateCar(id, updatingField, newValue);
+		} catch ( DAOException|FieldNotFoundException e) {
+			throw new ServiceException(e.getMessage());
+		}
 	}
 
 	@Override
-	public void unbookCar(Integer id) throws ServiceException {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	
+	public String getCarAsString(Integer id) throws ServiceException {
+		String oneCar = "";
+		try {
+			DAOFactory daoObjectFactory = DAOFactory.getInstance();
+			CarDAO carDAO = daoObjectFactory.getCarDAO();
+			oneCar = carDAO.getCarAsString(id);
+		} catch ( DAOException|FieldNotFoundException e) {
+			throw new ServiceException(e.getMessage());
+		}
+		return oneCar;
+	}	
 
 }

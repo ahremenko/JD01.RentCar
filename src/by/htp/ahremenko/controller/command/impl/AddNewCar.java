@@ -9,6 +9,8 @@ import by.htp.ahremenko.bean.Car.CarCase;
 import by.htp.ahremenko.bean.RentCar.FuelType;
 import by.htp.ahremenko.bean.RentCar.TransmissionType;
 import by.htp.ahremenko.controller.command.Command;
+import by.htp.ahremenko.controller.exception.LogicException;
+import by.htp.ahremenko.dao.exception.DAOException;
 import by.htp.ahremenko.dao.impl.FileRW;
 import by.htp.ahremenko.service.RentService;
 import by.htp.ahremenko.service.exception.ServiceException;
@@ -17,7 +19,7 @@ import by.htp.ahremenko.service.factory.ServiceFactory;
 public class AddNewCar implements Command {
 
 	@Override
-	public String execute(String request) {
+	public String execute(String request) throws LogicException {
 		//System.out.println("AddNewCar executes: " + request);
 		Scanner scanner = null;
 		Integer i = 1;
@@ -78,28 +80,18 @@ public class AddNewCar implements Command {
         
         try {
         	i = FileRW.getNewCarId();
-        } catch (IOException e) {
-        	e.getStackTrace();
-        }
-        if (md == -1) {
-    		RentCar car = new RentCar(i, m, mt, cc, y, p, t, f);
-    		try {
+        	if (md == -1) {
+        		RentCar car = new RentCar(i, m, mt, cc, y, p, t, f);
     			rentService.addNewCar(car);
-    		} catch (ServiceException e) {
-    			FileRW.writeLog(e.getMessage());
-    		}
-    		
-        } else {
-    		RentCarEco carEco = new RentCarEco(i, m, mt, cc, y, p, md );
-    		try {
+        	} else {
+        		RentCarEco carEco = new RentCarEco(i, m, mt, cc, y, p, md );
     			rentService.addNewCar(carEco);
-    		} catch (ServiceException e) {
-    			FileRW.writeLog(e.getMessage());
-    		}
-
+        	}
+        } catch (DAOException e) {
+        	throw new LogicException(e.getMessage());
         }
         
-        return "Car was added succesfull.";    
+        return "Car was added succesfully.";    
 	}
 	
 	

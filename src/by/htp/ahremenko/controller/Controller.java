@@ -1,6 +1,8 @@
 package by.htp.ahremenko.controller;
 
+import by.htp.ahremenko.bean.exception.FieldNotFoundException;
 import by.htp.ahremenko.controller.command.Command;
+import by.htp.ahremenko.controller.exception.LogicException;
 
 public final class Controller {
 	
@@ -8,7 +10,7 @@ public final class Controller {
 	
 	private final char commandDelimiter = ' ';
 	
-	public String executeTask (String request) {
+	public String executeTask (String request) throws LogicException {
 		String commandName;
 		Command executingCommand;
 		String commandArgs;
@@ -20,7 +22,7 @@ public final class Controller {
 		}
 		executingCommand = provider.getCommand(commandName);
 		if ( request.indexOf(commandDelimiter) > 0 ) {
-		   commandArgs = request.substring(request.indexOf(commandDelimiter) + 1 );
+			commandArgs = request.substring(request.indexOf(commandDelimiter) + 1 );
 		} else {
 			commandArgs = "";
 		}

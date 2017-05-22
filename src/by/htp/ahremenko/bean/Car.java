@@ -1,5 +1,7 @@
 package by.htp.ahremenko.bean;
 
+import by.htp.ahremenko.bean.RentCar.CarFields;
+import by.htp.ahremenko.bean.exception.FieldNotFoundException;
 import by.htp.ahremenko.dao.impl.FileRW;
 
 public class Car {
@@ -157,14 +159,29 @@ public class Car {
 		//		+ ", publisherName=" + publisherName + "]";
 	}
 	
-	public boolean searchByField (String searchingString, CarFields fieldForSearch) {
-		switch (fieldForSearch) {
-		case ID: return ( this.id == Integer.parseInt(searchingString) );
-		case MODEL: return this.model.equals(searchingString);
-		case MODELTYPE: return this.modelType.equals(searchingString);
-		case CARCASE: return this.carCase.equals(searchingString); 
-		case YEARMANUFACTURED: return ( this.yearManufactured == Integer.parseInt(searchingString) );
-		case RENTPRICEPERDAY: return ( this.rentPricePerDay == Float.parseFloat(searchingString) );
+	/**
+	 * return true if [fieldForSearch] of RentCar = [searchingString]
+	 * and false in another cases 
+	 */
+	public boolean searchByField (String searchingString, String fieldForSearch) throws FieldNotFoundException {
+		CarFields enumedField;
+		
+		try {
+			enumedField = CarFields.valueOf(fieldForSearch);
+		} catch (IllegalArgumentException e) {
+			throw new FieldNotFoundException();
+		} 
+		try {
+			switch (enumedField) {
+			case ID: return ( this.id == Integer.parseInt(searchingString) );
+			case MODEL: return this.model.equals(searchingString);
+			case MODELTYPE: return this.modelType.equals(searchingString);
+			case CARCASE: return this.carCase.equals(searchingString); 
+			case YEARMANUFACTURED: return ( this.yearManufactured == Integer.parseInt(searchingString) );
+			case RENTPRICEPERDAY: return ( this.rentPricePerDay == Float.parseFloat(searchingString) );
+			}
+		} catch (NumberFormatException e){
+			// if format error - nothing to do (return false)
 		}
 		return false;
 	}

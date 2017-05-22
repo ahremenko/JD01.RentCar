@@ -2,34 +2,23 @@ package by.htp.ahremenko.dao.impl;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
-//import java.util.Calendar;
+import by.htp.ahremenko.dao.exception.DAOException;
 
 public class FileRW {
 	
 	private static String logFilePath = "c:\\Temp\\log.txt";
 	private static String carFilePath = "c:\\Temp\\car.csv";
-	private static String userFilePath = "c:\\Temp\\user.csv";
-	private static String schedulerFilePath = "c:\\Temp\\scheduler.csv";
 	public static String csvDelimiter = ";";
 
 	public static String getCarFilePath () {
 		return carFilePath;
 	}
 	
-	public static String getUserFilePath () {
-		return userFilePath;
-	}
-
-	public static String getSchedulerFilePath () {
-		return schedulerFilePath;
-	}
-
-	public static Integer getNewCarId () throws IOException {
+	public static Integer getNewCarId () throws DAOException {
 		// read file and return last car Id + 1
 		Integer carCounter = 1;  // 
 		
@@ -39,52 +28,53 @@ public class FileRW {
 				carCounter++;            
 			}
 			reader.close();
-		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
+			//can be FileNotFoundException or other
 			writeLog(e.getMessage());
+			throw new DAOException(e.getMessage());
 		}
 		return carCounter;
 	}
 	
-	public static void addLine(String nameFile, String text) {
-	    StringBuilder sb = new StringBuilder();
-	    String oldFile = readFile(nameFile);
-	    sb.append(oldFile);
-	    sb.append(text);
-	    writeFile(nameFile, sb.toString());
-	    //FileRW.writeLog("String " + text + " was added.");
+	public static void addLine(String nameFile, String text) throws DAOException {
+		StringBuilder sb = new StringBuilder();
+		String oldFile = readFile(nameFile);
+		sb.append(oldFile);
+		sb.append(text);
+		writeFile(nameFile, sb.toString());
+		//FileRW.writeLog("String " + text + " was added.");	
+	    
 	}	
 	
-	public static void writeLog (String msg) {
+	public static void writeLog (String msg) throws DAOException {
 		long sysTime = System.currentTimeMillis(); 
 		String sysDate = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(sysTime); 
 		addLine(logFilePath, sysDate + " " + msg);
 	}
 	
-	public static String readFile(String fileName) {
+	public static String readFile(String fileName) throws DAOException {
 	    StringBuilder sb = new StringBuilder();
 	    File file = new File(fileName);
 	    if (file.exists()) {
 	    	try {
 	    		BufferedReader in = new BufferedReader(new FileReader( file.getAbsoluteFile()));
-	    		try {
-	    			String s;
-	    			while ((s = in.readLine()) != null) {
-	    				sb.append(s);
-	    				sb.append("\n");
-	    			}
-	    		} finally {
-	    			in.close();
-	    		}
-	    	} catch(IOException e) {
-	    		throw new RuntimeException(e);
-	    	}
+    			String s;
+    			while ((s = in.readLine()) != null) {
+    				sb.append(s);
+    				sb.append("\n");
+    			}
+    			in.close();
+			} catch (IOException e) {
+				writeLog(e.getMessage());
+				throw new DAOException(e.getMessage());
+			}	
 	    	return sb.toString();
 	    } else {
 	    	return "";
 	    }
 	}
 	
-	public static void writeFile(String fileName, String text) {
+	public static void writeFile(String fileName, String text) throws DAOException {
 	    File file = new File(fileName);
 	    try {
 	        if(!file.exists()){
@@ -96,12 +86,13 @@ public class FileRW {
 	        } finally {
 	            out.close();
 	        }
-	    } catch(IOException e) {
-	        throw new RuntimeException(e);
+	    } catch (IOException e) {
+			writeLog(e.getMessage());
+			throw new DAOException(e.getMessage());
 	    }
 	}
 	
-	public static void deleteLine(String nameFile, String text) {
+	public static void deleteLine(String nameFile, String text) throws DAOException {
 	    String oldFile = readFile(nameFile);
 	    if (oldFile.contains(text+"\n")) {
 	    	writeFile(nameFile, oldFile.replaceAll(text+"\n", ""));
@@ -112,7 +103,7 @@ public class FileRW {
 	    
 	}	
 	
-	public static void updateLine(String nameFile, String searchingString, String replacingString) {
+	public static void updateLine(String nameFile, String searchingString, String replacingString) throws DAOException {
 	    String oldFile = readFile(nameFile);
 	    if (oldFile.contains(searchingString)) {
 	    	writeFile(nameFile, oldFile.replaceAll(searchingString, replacingString));

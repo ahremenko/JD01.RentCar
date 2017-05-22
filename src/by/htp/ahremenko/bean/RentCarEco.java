@@ -1,12 +1,29 @@
 package by.htp.ahremenko.bean;
 
 import by.htp.ahremenko.bean.Car.CarCase;
+import by.htp.ahremenko.bean.Car.CarFields;
 import by.htp.ahremenko.bean.RentCar.FuelType;
 import by.htp.ahremenko.bean.RentCar.TransmissionType;
+import by.htp.ahremenko.bean.exception.FieldNotFoundException;
 import by.htp.ahremenko.dao.impl.FileRW;
 
 public class RentCarEco extends Car {
 	private Integer maxDistance;
+
+	public enum CarFields {
+		//ID(true), MODEL(true), MODELTYPE(false), YEARMANUFACTURED(true), CARCASE(true), RENTPRICEPERDAY(true), 
+		MAXDISTANCE(false);
+		private boolean isAsc;
+		private CarFields(boolean ascend) {
+			this.isAsc = ascend;
+		}
+		public void setAscend(boolean ascend) {
+			this.isAsc = ascend;
+		}
+		public boolean getAscend() {
+			return isAsc;
+		}
+	}
 	
 	public RentCarEco () {
 		super();
@@ -77,6 +94,29 @@ public class RentCarEco extends Car {
 			return false;
 		return true;
 
+	}
+	
+	/**
+	 * return true if [fieldForSearch] of RentCar = [searchingString]
+	 * and false in another cases 
+	 */
+	public boolean searchByField (String searchingString, String fieldForSearch) throws FieldNotFoundException {
+		CarFields enumedField;
+		try {
+			enumedField = CarFields.valueOf(fieldForSearch);
+		} catch (IllegalArgumentException e) {
+			return super.searchByField(searchingString, fieldForSearch);
+		}
+		
+		try {
+			switch (enumedField) {
+			case MAXDISTANCE: return ( this.maxDistance == Integer.parseInt(searchingString) );
+			}
+		} catch (NumberFormatException e) {
+			// if number not Integer - nothing to do 
+		}
+		return false;
+		
 	}
 	
 	

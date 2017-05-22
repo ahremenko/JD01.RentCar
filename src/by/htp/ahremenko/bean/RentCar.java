@@ -1,12 +1,29 @@
 package by.htp.ahremenko.bean;
 
 import by.htp.ahremenko.bean.Car.CarCase;
+import by.htp.ahremenko.bean.RentCarEco.CarFields;
+import by.htp.ahremenko.bean.exception.FieldNotFoundException;
 import by.htp.ahremenko.dao.impl.FileRW;
 
 public class RentCar extends Car {
 	
 	public enum TransmissionType { MT, AT, ND}
 	public enum FuelType {DIESEL, GAS, BENZINE, ND}
+	
+	public enum CarFields {
+		//ID(true), MODEL(true), MODELTYPE(false), YEARMANUFACTURED(true), CARCASE(true), RENTPRICEPERDAY(true), 
+		FUEL(false), TRANSMISSION(true);
+		private boolean isAsc;
+		private CarFields(boolean ascend) {
+			this.isAsc = ascend;
+		}
+		public void setAscend(boolean ascend) {
+			this.isAsc = ascend;
+		}
+		public boolean getAscend() {
+			return isAsc;
+		}
+	}
 	
 	private TransmissionType transmission;
 	private FuelType fuel;
@@ -93,5 +110,27 @@ public class RentCar extends Car {
 
 	}
 	
-
+	/**
+	 * return true if [fieldForSearch] of RentCar = [searchingString]
+	 * and false in another cases 
+	 */
+	public boolean searchByField (String searchingString, String fieldForSearch) throws FieldNotFoundException {
+		CarFields enumedField;
+		try {
+			enumedField = CarFields.valueOf(fieldForSearch);
+		} catch (IllegalArgumentException e) {
+			return super.searchByField(searchingString, fieldForSearch);
+		}
+		
+		try {
+			switch (enumedField) {
+			case FUEL: return ( this.fuel == FuelType.valueOf( searchingString) );
+			case TRANSMISSION: return ( this.transmission == TransmissionType.valueOf( searchingString) );
+			}
+		} catch (IllegalArgumentException e) {
+			// if searchingString not in enum - nothing to do 
+		}
+		return false;
+	}
+	
 }
